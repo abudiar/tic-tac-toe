@@ -19,7 +19,7 @@
 			check: function() {
 				if (this.symbol == '' && this.playerSym == this.activeSym) {
 					this.symbol = this.activeSym;
-					playTurn();
+					this.playTurn();
 				}
 				else {
 					this.$buefy.toast.open({
