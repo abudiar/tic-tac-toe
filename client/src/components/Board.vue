@@ -180,6 +180,40 @@
                 });
             });
         },
+        sockets: {
+            connect() {
+                console.log('socket connected')
+            },
+            gameEnd(data) {
+                let status = '';
+                let winner = '';
+                if (!data.message == 'draw') {
+                    let messageArr = data.message.split(' ');
+                    status = messageArr.pop();
+                    winner = messageArr.join(' ');
+                }
+                else {
+                    status = data.message;
+                }
+                this.$store.dispatch({
+                    type: 'updateStatus',
+                    room: this.room,
+                    status
+                });
+                this.$store.dispatch({
+                    type: 'updateWinner',
+                    room: this.room,
+                    winner
+                });
+            },
+            turnPlayed(data) {
+                this.$store.dispatch({
+                    type: 'pushTile',
+                    room: this.room,
+                    tile: data.tile
+                });
+            }
+        },
 	}
 </script>
 
