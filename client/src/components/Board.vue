@@ -143,7 +143,7 @@
                         break;
                     case 'running':
                         break;
-                    case 'stopped':
+                    case 'waiting':
                         break;
                 }                
             }

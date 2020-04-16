@@ -19,6 +19,9 @@ export default new Vuex.Store({
     updatePlayerName: (state, payload) => {
       state.playerName = payload.playerName;
     },
+    updateAllGames: (state, payload) => {
+      state.games = payload.games;
+    }
   },
   actions: {
     resetBoard: ({commit}, payload) => {
@@ -31,7 +34,7 @@ export default new Vuex.Store({
           p2Name: '',
           tiles: [],
           winner: '',
-          status: 'stopped',
+          status: 'waiting',
           player: ''
         }
       })
