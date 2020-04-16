@@ -23,7 +23,12 @@
 					playTurn();
 				}
 				else {
-
+					this.$buefy.toast.open({
+						duration: 5000,
+						message: `Please wait your turn!`,
+						position: 'is-bottom',
+						type: 'is-danger'
+					})
 				}
 			},
 			playTurn() {
