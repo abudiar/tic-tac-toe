@@ -5,7 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    games: {},
+    games: {
+      test: {
+        gameName: '',
+        p1Name: '',
+        p2Name: '',
+        tiles: [],
+        winner: '',
+        status: 'waiting',
+        player: 'p1'
+      }
+    },
     playerName: ''
   },
   getters: {
