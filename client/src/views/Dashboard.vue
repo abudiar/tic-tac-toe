@@ -1,12 +1,7 @@
 <template>
     <div>
         <div class="boxs">
-            <h1>Tic Tac Toe</h1>
-            <hr>
-            <form >
-                <input class="btn btn-primary" type="text" placeholder="Nickname">
-                <button type="submit" class="btn btn-primary">Play Game</button>
-            </form>
+            <h1>Dashboard</h1>
         </div>
     </div>
 </template>

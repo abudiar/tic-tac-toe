@@ -5,16 +5,16 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
-    -->
     <Dashboard></Dashboard>
+    -->
+    <router-view/>
   </div>
 </template>
 <script>
-import Dashboard from './views/Dashboard'
+// import Dashboard from './views/Dashboard'
 export default {
   components: {
-    Dashboard
+    // Dashboard
   }
 }
 </script>
