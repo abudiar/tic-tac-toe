@@ -1,12 +1,14 @@
 <template>
-    <div>
+    <div class="contentHome">
         <div class="boxs">
-            <h1>Tic Tac Toe</h1>
+            <h1 class="title">Tic Tac Toe</h1>
             <hr>
-            <form>
-                <input class="btn btn-primary" type="text" placeholder="Nickname" v-model="inputNickname">
-                <button type="submit" class="btn btn-primary" @click.prevent="toDashboard">Play Game</button>
-            </form>
+            <section>
+                <b-field label="Nickname">
+                    <b-input v-model="inputNickname"></b-input>
+                </b-field>
+                <b-button type="is-warning" @click.prevent="toDashboard">Play Game</b-button>
+            </section>
         </div>
     </div>
 </template>
@@ -45,12 +47,19 @@ export default {
 
 <style>
     .boxs {
-        background-color: #cbecdd7d;
+        background-color: #abe3cae0;
         padding: 30px;
         top: 50%;
         left: 50%;
         transform: translate(-50%,-50%);
         box-sizing: border-box;
         position: absolute;
+    }
+    .contentHome {
+      background-image: url('../assets/background.jpg');
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-size: cover;
     }
 </style>
