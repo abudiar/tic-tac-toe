@@ -7,17 +7,17 @@
         <hr>
         <div class="container">
             <div class="columns is-multiline">
-                <Room v-if="createNew" :nameRoom="nameRoom"></Room>
+                <RoomCard v-if="createNew" :nameRoom="nameRoom"></Room>
             </div>
         </div>
     </div>
 </template>
 <script>
-import Room from './Room.vue';
+import RoomCard from './RoomCard.vue';
 export default {
     name: 'Dashboard',
     components: {
-        Room
+        RoomCard
     },
     data () {
         return {
@@ -42,6 +42,7 @@ export default {
             })
         },
     },
+
 }
 </script>
 
