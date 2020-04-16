@@ -1,18 +1,16 @@
 const express = require('express');
-const path = require('path');
 
 const app = express();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const port = process.env.PORT || 3000;
 
 let rooms = 0;
 
 app.use(express.static('.'));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'game.html'));
+const server = app.listen(port, () => {
+  console.log('listening on port: ', port);
 });
 
+const io = require('socket.io')(server);
 io.on('connection', (socket) => {
   // Create a new game room and notify the creator of game.
   socket.on('createGame', (data) => {
@@ -31,6 +29,21 @@ io.on('connection', (socket) => {
       socket.emit('err', { message: 'Sorry, The room is full!' });
     }
   });
-});
 
-server.listen(process.env.PORT || 5000);
+  /**
+   * Handle the turn played by either player and notify the other.
+   */
+  socket.on('playTurn', (data) => {
+    socket.broadcast.to(data.room).emit('turnPlayed', {
+      tile: data.tile,
+      room: data.room,
+    });
+  });
+
+  /**
+   * Notify the players about the victor.
+   */
+  socket.on('gameEnded', (data) => {
+    socket.broadcast.to(data.room).emit('gameEnd', data);
+  });
+});
