@@ -9,9 +9,9 @@
     import Tile from './Tile';
 	export default {
         name: 'Board',
-        components: [
+        components: {
             Tile
-        ],
+        },
         props: {
             room: String,
         },
