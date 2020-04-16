@@ -7,7 +7,7 @@
         <hr>
         <div class="container">
             <div class="columns is-multiline">
-                <RoomCard v-if="createNew" :nameRoom="nameRoom"></Room>
+                <RoomCard v-if="createNew" :nameRoom="nameRoom"></RoomCard>
             </div>
         </div>
     </div>
