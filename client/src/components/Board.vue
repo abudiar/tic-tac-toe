@@ -12,8 +12,6 @@
         props: {
             room: String,
             player: String, // p1 || p2
-            p1Name: Object,
-            p2Name: Object
         },
         computed: {
             tiles: function() {
@@ -35,6 +33,12 @@
                 }
                 return arr;
             },
+            p1Name() {
+                return this.$store.state.games[room]['p1Name'];
+            },
+            p2Name() {
+                return this.$store.state.games[room]['p2Name'];
+            }
         },
         data() {
             return {
