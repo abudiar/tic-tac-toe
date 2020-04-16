@@ -1,6 +1,6 @@
 <template>
     <div class="board">
-        <Tile v-for="i in tiles" :key="i" :tile="i" :playTurn="playTurn(i)"
+        <Tile v-for="i in tilesTotal" :key="i" :tile="i" :playTurn="playTurn(i)"
             :activeSym="activeSym" :playerSym="getSym()" :room="room"/>
     </div>
 </template>
@@ -11,9 +11,6 @@
         name: 'Board',
         props: {
             room: String,
-            player: String, // p1 || p2
-            p1Name: Object,
-            p2Name: Object
         },
         computed: {
             tiles: function() {
@@ -25,16 +22,25 @@
             status: function() {
                 return this.$store.state.games[room]['status'];
             },
+            p1Name() {
+                return this.$store.state.games[room]['p1Name'];
+            },
+            p2Name() {
+                return this.$store.state.games[room]['p2Name'];
+            },
+            player() {
+                return this.$store.state.games[room]['player'];
+            },
             getSym() {
                 return this.player == 'p1' ? 'X' : 'Y';
             },
-            tiles() {
+            tilesTotal() {
                 const arr = [];
                 for (let i = 0; i < 9; i++) {
                     arr.push(i);
                 }
                 return arr;
-            },
+            }
         },
         data() {
             return {
@@ -51,7 +57,7 @@
         ],
         methods: {
             resetBoard() {
-                this.$store.commit({
+                this.$store.dispatch({
                     type: 'resetBoard',
                     room: this.room
                 });
@@ -62,7 +68,7 @@
 					room: this.room,
 					tile
 				});
-                this.$store.commit({
+                this.$store.dispatch({
                     type: 'pushTile',
                     room: this.room,
                     tile
@@ -81,7 +87,7 @@
             },
             tiles: function() {
                 if (tiles.length >= 9) {
-                    this.$store.commit({
+                    this.$store.dispatch({
                         type: 'updateStatus',
                         room: this.room,
                         status: 'draw'
@@ -102,12 +108,12 @@
                     if (tilesX.includes(this.winConditions[i][0]) &&
                         tilesX.includes(this.winConditions[i][1]) &&
                         tilesX.includes(this.winConditions[i][2])) {
-                            this.$store.commit({
+                            this.$store.dispatch({
                                 type: 'updateStatus',
                                 room: this.room,
                                 status: 'won'
                             });
-                            this.$store.commit({
+                            this.$store.dispatch({
                                 type: 'updateWinner',
                                 room: this.room,
                                 status: this.p1Name
@@ -117,12 +123,12 @@
                     else if (tilesY.includes(this.winConditions[i][0]) &&
                         tilesY.includes(this.winConditions[i][1]) &&
                         tilesY.includes(this.winConditions[i][2])) {
-                            this.$store.commit({
+                            this.$store.dispatch({
                                 type: 'updateStatus',
                                 room: this.room,
                                 status: 'won'
                             });
-                            this.$store.commit({
+                            this.$store.dispatch({
                                 type: 'updateWinner',
                                 room: this.room,
                                 status: this.p2Name
@@ -137,7 +143,7 @@
                         break;
                     case 'running':
                         break;
-                    case 'stopped':
+                    case 'waiting':
                         break;
                 }                
             }
@@ -155,19 +161,19 @@
                 else {
                     status = data.message;
                 }
-                this.$store.commit({
+                this.$store.dispatch({
                     type: 'updateStatus',
                     room: this.room,
                     status
                 });
-                this.$store.commit({
+                this.$store.dispatch({
                     type: 'updateWinner',
                     room: this.room,
                     winner
                 });
             });
             this.$socket.on('turnPlayed', (data) => {
-                this.$store.commit({
+                this.$store.dispatch({
                     type: 'pushTile',
                     room: this.room,
                     tile: data.tile
