@@ -6,9 +6,8 @@
 	export default {
 		name: "Tile",
 		props: {
-			activeSymbol: String,
-			playerSymbol: String,
-			tile: Number,
+			activeSym: String,
+			playerSym: String,
 			room: String
 		},
 		data () {
@@ -18,8 +17,8 @@
 		},
 		methods: {
 			check: function() {
-				if (this.symbol == '' && this.playerSymbol == this.activeSymbol) {
-					this.symbol = this.activeSymbol;
+				if (this.symbol == '' && this.playerSym == this.activeSym) {
+					this.symbol = this.activeSym;
 					playTurn();
 				}
 				else {
@@ -32,10 +31,7 @@
 				}
 			},
 			playTurn() {
-				this.$socket.emit('playTurn', {
-					tile: this.tile,
-					room: this.room
-				});
+				this.$emit('playTurn');
 			}
 		}
 	}
