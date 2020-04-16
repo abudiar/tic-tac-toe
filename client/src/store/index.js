@@ -16,11 +16,15 @@ export default new Vuex.Store({
         player: 'p1'
       }
     },
-    playerName: ''
+    playerName: '',
+    nickname: ''
   },
   getters: {
   },
   mutations: {
+    SET_NICKNAME(state, n) {
+      state.nickname = n;
+    },
     updateGame: (state, payload) => {
       const currentGames = {...state.games};
       currentGames[payload.room] = payload.game;
