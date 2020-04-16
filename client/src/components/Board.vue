@@ -9,27 +9,30 @@
     import Tile from './Tile';
 	export default {
         name: 'Board',
+        components: [
+            Tile
+        ],
         props: {
             room: String,
         },
         computed: {
             tiles: function() {
-                return this.$store.state.games[room]['tiles'];
+                return this.$store.state.games[this.room]['tiles'];
             },
             winner: function() {
-                return this.$store.state.games[room]['winner'];
+                return this.$store.state.games[this.room]['winner'];
             },
             status: function() {
-                return this.$store.state.games[room]['status'];
+                return this.$store.state.games[this.room]['status'];
             },
             p1Name() {
-                return this.$store.state.games[room]['p1Name'];
+                return this.$store.state.games[this.room]['p1Name'];
             },
             p2Name() {
-                return this.$store.state.games[room]['p2Name'];
+                return this.$store.state.games[this.room]['p2Name'];
             },
             player() {
-                return this.$store.state.games[room]['player'];
+                return this.$store.state.games[this.room]['player'];
             },
             getSym() {
                 return this.player == 'p1' ? 'X' : 'Y';
@@ -52,9 +55,6 @@
                 ]
             }
         },
-        components: [
-            'Tile'
-        ],
         methods: {
             resetBoard() {
                 this.$store.dispatch({
@@ -86,13 +86,13 @@
                 this.resetBoard();
             },
             tiles: function() {
-                if (tiles.length >= 9) {
+                if (this.tiles.length >= 9) {
                     this.$store.dispatch({
                         type: 'updateStatus',
                         room: this.room,
                         status: 'draw'
                     });
-                    gameEnded('draw');
+                    this.gameEnded('draw');
                 }
                 const tilesX = [];
                 const tilesY = [];
@@ -118,7 +118,7 @@
                                 room: this.room,
                                 status: this.p1Name
                             });
-                            gameEnded(this.p1Name + ' won');
+                            this.gameEnded(this.p1Name + ' won');
                         }
                     else if (tilesY.includes(this.winConditions[i][0]) &&
                         tilesY.includes(this.winConditions[i][1]) &&
@@ -133,7 +133,7 @@
                                 room: this.room,
                                 status: this.p2Name
                             });
-                            gameEnded(this.p2Name + ' won');
+                            this.gameEnded(this.p2Name + ' won');
                         }
                 }
             },
