@@ -1,7 +1,7 @@
 <template>
     <div class="board">
         <Tile v-for="i in tilesTotal" :key="i" :tile="i" :playTurn="playTurn(i)"
-            :activeSym="activeSym" :playerSym="getSym()" :room="room"/>
+            :activeSym="activeSym" :playerSym="getSym" :room="room"/>
     </div>
 </template>
 

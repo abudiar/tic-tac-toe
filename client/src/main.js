@@ -4,21 +4,15 @@ import router from './router'
 import store from './store'
 import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
-import VueSocketIO from 'vue-socket.io'
+import VueSocketIOExt from 'vue-socket.io-extended';
+import io from 'socket.io-client';
+
 Vue.config.productionTip = false
+const socket = io.connect('http://localhost:3000');
+ 
+Vue.use(VueSocketIOExt, socket);
 
 Vue.use(Buefy)
-
-Vue.use(new VueSocketIO({
-  debug: true,
-  connection: 'http://localhost:3000',
-  vuex: {
-      store,
-      actionPrefix: 'SOCKET_',
-      mutationPrefix: 'SOCKET_'
-  },
-  options: { path: "/" }
-}))
 
 new Vue({
   router,

@@ -12,6 +12,7 @@ import Board from '@/components/Board.vue';
 export default {
     name: 'Room',
     components: {
+        Board
     },
     data () {
         return {

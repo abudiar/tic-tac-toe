@@ -1,5 +1,5 @@
 <template>
-	<td class="tile" @click="check">{{ symbol }}</td>
+	<div class="tile" @click="check">{{ symbol }}</div>
 </template>
 
 <script>
@@ -36,6 +36,11 @@
 		}
 	}
 </script>
-
 <style>
+	.tile {
+		width: 100%;
+		height: 50px;
+		background: rgb(255, 255, 255);
+		border: 1px solid;
+	}
 </style>
