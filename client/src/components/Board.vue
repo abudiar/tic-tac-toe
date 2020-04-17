@@ -1,7 +1,7 @@
 <template>
     <div class="board">
-        <Tile v-for="i in tilesTotal" :key="i" :tile="i" :playTurn="playTurn(i)"
-            :activeSym="activeSym" :playerSym="getSym" :room="room"/>
+        <Tile v-for="i in tilesTotal" :key="i" :tile="i" @playTurn="playTurn(i)"
+            :activeSym="getActiveSym" :playerSym="getSym" :room="room"/>
     </div>
 </template>
 
@@ -34,8 +34,12 @@
             player() {
                 return this.$store.state.games[this.room]['player'];
             },
+            getActiveSym() {
+                return this.tiles.length % 2 == 0 ? 'X' : 'Y';
+            },
             getSym() {
-                return this.player == 'p1' ? 'X' : 'Y';
+                console.log(this.$store.state.games[this.room]['player'])
+                return this.$store.state.games[this.room]['player'] == 'p1' ? 'X' : 'Y';
             },
             tilesTotal() {
                 const arr = [];
@@ -47,7 +51,6 @@
         },
         data() {
             return {
-                activeSym: 'X',
                 winConditions: [
                     [0, 1, 2], [3, 4, 5], [6, 7, 8],
                     [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -56,15 +59,8 @@
             }
         },
         methods: {
-            resetBoard() {
-                this.$store.dispatch({
-                    type: 'resetBoard',
-                    room: this.room
-                });
-                this.activeSym = 'X';
-            },
             playTurn(tile) {
-				this.$socket.emit('playTurn', {
+				this.$socket.client.emit('playTurn', {
 					room: this.room,
 					tile
 				});
@@ -75,16 +71,14 @@
                 });
             },
             gameEnded(message) {
-				this.$socket.emit('gameEnded', {
+                console.log(message);
+				this.$socket.client.emit('gameEnded', {
                     room: this.room,
                     message
 				});
             }
         },
         watch: {
-            room: function() {
-                this.resetBoard();
-            },
             tiles: function() {
                 if (this.tiles.length >= 9) {
                     this.$store.dispatch({
@@ -94,47 +88,53 @@
                     });
                     this.gameEnded('draw');
                 }
-                const tilesX = [];
-                const tilesY = [];
-                for (let i in this.tiles) {
-                    if (Number(i) % 2 == 0) {
-                        tilesX.push(this.tiles[i]);
-                    }
-                    else {
-                        tilesY.push(this.tiles[i]);
-                    }
-                }
-                for (let i in this.winConditions) {
-                    if (tilesX.includes(this.winConditions[i][0]) &&
-                        tilesX.includes(this.winConditions[i][1]) &&
-                        tilesX.includes(this.winConditions[i][2])) {
-                            this.$store.dispatch({
-                                type: 'updateStatus',
-                                room: this.room,
-                                status: 'won'
-                            });
-                            this.$store.dispatch({
-                                type: 'updateWinner',
-                                room: this.room,
-                                status: this.p1Name
-                            });
-                            this.gameEnded(this.p1Name + ' won');
+                console.log('aaaaaa',this.status);
+                if (this.status == 'running') {
+                    const tilesX = [];
+                    const tilesY = [];
+                    for (let i in this.tiles) {
+                        if (Number(i) % 2 == 0) {
+                            tilesX.push(this.tiles[i]);
                         }
-                    else if (tilesY.includes(this.winConditions[i][0]) &&
-                        tilesY.includes(this.winConditions[i][1]) &&
-                        tilesY.includes(this.winConditions[i][2])) {
-                            this.$store.dispatch({
-                                type: 'updateStatus',
-                                room: this.room,
-                                status: 'won'
-                            });
-                            this.$store.dispatch({
-                                type: 'updateWinner',
-                                room: this.room,
-                                status: this.p2Name
-                            });
-                            this.gameEnded(this.p2Name + ' won');
+                        else {
+                            tilesY.push(this.tiles[i]);
                         }
+                    }
+                    console.log(this.status, tilesX, tilesY);
+                    for (let i in this.winConditions) {
+                        if (tilesX.includes(this.winConditions[i][0]) &&
+                            tilesX.includes(this.winConditions[i][1]) &&
+                            tilesX.includes(this.winConditions[i][2])) {
+                                this.$store.dispatch({
+                                    type: 'updateStatus',
+                                    room: this.room,
+                                    status: 'won'
+                                });
+                                this.$store.dispatch({
+                                    type: 'updateWinner',
+                                    room: this.room,
+                                    winner: this.p1Name
+                                });
+                                this.gameEnded(this.p1Name + ' won');
+                                break;
+                            }
+                        else if (tilesY.includes(this.winConditions[i][0]) &&
+                            tilesY.includes(this.winConditions[i][1]) &&
+                            tilesY.includes(this.winConditions[i][2])) {
+                                this.$store.dispatch({
+                                    type: 'updateStatus',
+                                    room: this.room,
+                                    status: 'won'
+                                });
+                                this.$store.dispatch({
+                                    type: 'updateWinner',
+                                    room: this.room,
+                                    winner: this.p2Name
+                                });
+                                this.gameEnded(this.p2Name + ' won');
+                                break;
+                            }
+                    }
                 }
             },
             status: function() {
@@ -149,36 +149,6 @@
             }
         },
         mounted() {
-            this.resetBoard();
-            this.$socket.on('gameEnd', (data) => {
-                let status = '';
-                let winner = '';
-                if (!data.message == 'draw') {
-                    let messageArr = data.message.split(' ');
-                    status = messageArr.pop();
-                    winner = messageArr.join(' ');
-                }
-                else {
-                    status = data.message;
-                }
-                this.$store.dispatch({
-                    type: 'updateStatus',
-                    room: this.room,
-                    status
-                });
-                this.$store.dispatch({
-                    type: 'updateWinner',
-                    room: this.room,
-                    winner
-                });
-            });
-            this.$socket.on('turnPlayed', (data) => {
-                this.$store.dispatch({
-                    type: 'pushTile',
-                    room: this.room,
-                    tile: data.tile
-                });
-            });
         },
         sockets: {
             connect() {
