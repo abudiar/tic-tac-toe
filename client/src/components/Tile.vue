@@ -29,11 +29,14 @@
 		},
 		computed: {
 			tiles: function() {
-                console.log(this.$store.state.games[this.room].tiles)
+                // console.log(this.$store.state.games[this.room].tiles)
 				return [...this.$store.state.games[this.room].tiles];
 			},
 			status: function() {
 				return this.$store.state.games[this.room].status;
+			},
+			player: function() {
+				return this.$store.state.games[this.room].player;
 			}
 		},
 		data () {
@@ -55,28 +58,30 @@
 		methods: {
 			check: function() {
 				// console.log(this.symbol, this.playerSym, this.activeSym)
-				if (this.symbol == '' && 
-					this.playerSym == this.activeSym &&
-					this.status == 'running') {
-					this.playTurn();
-				}
-				else {
-					let message = '';
-					console.log('a',`'${this.status}'`);
-					if (this.status.includes('won'))
-						message = 'The game has finished!';
-					else if (this.status.includes('draw'))
-						message = 'The game has finished!';
-					else if (this.status.includes('waiting'))
-						message = 'Please wait for Player 2';
-					else
-						message = 'Please wait your turn!';
-					this.$buefy.toast.open({
-						duration: 5000,
-						message,
-						position: 'is-bottom',
-						type: 'is-danger'
-					})
+				if (this.player != '') {
+					if (this.symbol == '' && 
+						this.playerSym == this.activeSym &&
+						this.status == 'running') {
+						this.playTurn();
+					}
+					else {
+						let message = '';
+						console.log('a',`'${this.status}'`);
+						if (this.status.includes('won'))
+							message = 'The game has finished!';
+						else if (this.status.includes('draw'))
+							message = 'The game has finished!';
+						else if (this.status.includes('waiting'))
+							message = 'Please wait for Player 2';
+						else
+							message = 'Please wait your turn!';
+						this.$buefy.toast.open({
+							duration: 5000,
+							message,
+							position: 'is-bottom',
+							type: 'is-danger'
+						})
+					}
 				}
 			},
 			getSymbol: function() {

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Room from '../views/Room.vue'
+import Store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -14,15 +14,31 @@ Vue.use(VueRouter)
   {
     path: '/dashboard',
     name: 'Dashboard',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Dashboard.vue')
+    component: () => import('../views/Dashboard.vue'),
+    beforeEnter: (to, from, next) => {
+      console.log(Store.state.nickname);
+      if (!Store.state.nickname)
+        next('/');
+      next();
+    }
   },
   {
     path: '/games/:room',
     name: 'Room',
-    component: Room
+    component: () => import('../views/Room.vue'),
+    beforeEnter: (to, from, next) => {
+      console.log(Store.state.nickname);
+      if (!Store.state.nickname)
+        next('/');
+      next();
+    }
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    beforeEnter: (to, from, next) => {
+      next('/');
+    }
   },
 ]
 
