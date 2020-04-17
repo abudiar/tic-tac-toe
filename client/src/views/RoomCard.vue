@@ -10,7 +10,7 @@
                 <p>{{$store.state.nickname}}</p>
                 <p>{player b}</p>
             </div>
-            <div class="room-footer btn-join" @click.prevent="">
+            <div class="room-footer btn-join" @click.prevent="toRoom">
                 Join
             </div>
         </div>
@@ -19,7 +19,12 @@
 <script>
 export default {
     name: "RoomCard",
-    props: ['nameRoom']
+    props: ['nameRoom'],
+    methods: {
+        toRoom() {
+            this.$router.push('/room');
+        }
+    },
 }
 </script>
 

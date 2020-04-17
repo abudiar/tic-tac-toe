@@ -1,6 +1,6 @@
 <template>
     <div class="contentDashboard">
-        <h2 class="title">Welcome, </h2>
+        <h2 class="title">Welcome, {{$store.state.nickname}}</h2>
         <hr>
         <div class="container">
             <Board />

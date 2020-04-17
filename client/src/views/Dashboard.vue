@@ -38,6 +38,7 @@ export default {
                     this.nameRoom = value;
                     this.createNew = true;
                     this.$buefy.toast.open(`Your room is: ${value}`)
+                    this.$router.push('/room');
                 }
             })
         },
