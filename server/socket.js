@@ -22,7 +22,7 @@ module.exports = function (server) {
       io.in('rooms').emit('rooms', { room, ...games[room] });
     });
     socket.on('joinGame', function (data) {
-      var room = io.nsps['/'].adapter.rooms[data.room];
+      let room = io.nsps['/'].adapter.rooms[data.room];
       if (!games[data.room]) {
         socket.emit('err', { message: `Room doesn't exist yet! Create one first!` });
       } else if (room && room.length === 1) {
