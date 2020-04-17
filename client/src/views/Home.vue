@@ -37,6 +37,7 @@ export default {
           );
         } else {
           this.$store.commit('SET_NICKNAME', this.inputNickname);
+          localStorage.setItem('nickname', this.inputNickname);
           this.inputNickname = '';
           this.$router.push('/dashboard');
         }

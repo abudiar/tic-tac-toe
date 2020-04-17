@@ -14,7 +14,9 @@
                 <Board v-if="$store.state.games[$route.params.room] && $store.state.games[$route.params.room]['player']" :room="$route.params.room"/>
                 <div class="room-footer transition" :class="{'show': (!isActive && isRunning) || (isActive && isWaiting)}">
                     {{isRunning ? `It's ${opponentName}'s turn!` : 'Waiting for someone to join...'}}
-                    
+                </div>
+                <div class="room-back" @click.prevent="roomBack">
+                    Back to dashboard
                 </div>
             </div>
             </div>
@@ -128,7 +130,12 @@ export default {
             });
             // console.log('player2', data.name);
         }
-    }
+    },
+    methods: {
+        roomBack() {
+            this.$router.push('/dashboard');
+        }
+    },
 
 }
 </script>
@@ -174,5 +181,15 @@ export default {
         max-height: 100vh;
         padding: 10px;
         opacity: 1;
+    }
+    .room-back {
+        border-top: 1px solid #dbdbdb;
+        font-weight: 700;
+        font-size: 20px;
+        background-color: #ff9292;
+        padding: 10px;
+    }
+    .room-back:hover {
+        cursor: pointer;
     }
 </style>
