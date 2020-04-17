@@ -11,8 +11,9 @@
                 <p>{player b}</p> -->
                 <Board v-if="$store.state.games[room]" :room="room"/>
             </div>
-            <div class="room-footer btn-join" @click.prevent="">
-                Join
+            <div class="room-footer btn-join" :class="{'disabled': $store.state.games[room].status != 'waiting'}"
+                @click.prevent="status == 'waiting' ? $router.push(`/games/${room}`) : null ">
+                {{ buttonName }}
             </div>
         </div>
     </div>
@@ -27,7 +28,29 @@ export default {
     props: [
         'nameRoom',
         "room"
-    ]
+    ],
+    methods: {
+        // joinGame: function(){
+        //     if (!this.$store.state.games[this.room])
+        //         this.$socket.client.emit('joinGame', {
+        //             room: this.room,
+        //             name: this.$store.state.nickname
+        //         })
+        //     this.$router.push(`/games/${this.room}`)
+        // }
+    },
+    computed: {
+        status: function() {
+            return this.$store.state.games[this.room].status;
+        },
+        buttonName: function () {
+            if (this.status == "waiting") 
+                return 'Join';
+            if (this.status == "running") 
+                return 'In Progress';
+            return 'Ended';
+        }
+    }
 }
 </script>
 
@@ -50,6 +73,11 @@ export default {
     .room-footer {
         border-top: 1px solid #dbdbdb;
         background-color: #f0ef9f;
+        &.disabled {
+            background-color: #f0ef9f6e;
+            color: #00000093;
+            cursor: default !important;
+        }
     }
     .room-footer:hover {
         cursor: pointer;

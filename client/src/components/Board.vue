@@ -1,7 +1,8 @@
 <template>
     <div class="board-content">
-        <div class="message">
-            <p>MESSAGE</p>
+        <div class="message" v-if="statusText">
+            <p v-if="statusWinner" v-resize-text>{{statusWinner}}</p>
+            <h6 v-resize-text>{{statusText}}</h6>
         </div>
         <div class="board">
             <Tile v-for="i in tilesTotal" :key="i" :tile="i" @playTurn="playTurn(i)"
@@ -39,6 +40,9 @@
             player() {
                 return this.$store.state.games[this.room]['player'];
             },
+            nickname() {
+                return this.$store.state.nickname;
+            },
             getActiveSym() {
                 return this.tiles.length % 2 == 0 ? 'X' : 'O';
             },
@@ -51,6 +55,20 @@
                     arr.push(i);
                 }
                 return arr;
+            },
+            statusText() {
+                if (this.status.includes("won"))
+                    return 'WON!';
+                if (this.status.includes("draw"))
+                    return 'DRAW!';
+                return null;
+            },
+            statusWinner() {
+                if (this.status.includes("won"))
+                    return this.winner == this.nickname ? 'You' : this.winner;
+                if (this.status.includes("draw"))
+                    return `${this.p1Name} & ${this.p2Name}`;
+                return null;
             }
         },
         data() {
@@ -74,26 +92,26 @@
                     tile
                 });
             },
-            gameEnded(message) {
-                console.log(message);
+            gameEnded(status,winner='') {
 				this.$socket.client.emit('gameEnded', {
                     room: this.room,
-                    message
+                    status,
+                    winner
 				});
             }
         },
         watch: {
             tiles: function() {
-                if (this.tiles.length >= 9) {
-                    this.$store.dispatch({
-                        type: 'updateStatus',
-                        room: this.room,
-                        status: 'draw'
-                    });
-                    this.gameEnded('draw');
-                }
-                console.log('aaaaaa',this.status);
-                if (this.status == 'running') {
+                if (this.status.includes('running')) {
+                    if (this.tiles.length >= 9) {
+                        this.$store.dispatch({
+                            type: 'updateStatus',
+                            room: this.room,
+                            status: 'draw'
+                        });
+                        this.gameEnded('draw');
+                    }
+                    // console.log('aaaaaa',this.status);
                     const tilesX = [];
                     const tilesY = [];
                     for (let i in this.tiles) {
@@ -104,38 +122,44 @@
                             tilesY.push(this.tiles[i]);
                         }
                     }
-                    console.log(this.status, tilesX, tilesY);
+                    // console.log(this.status, tilesX, tilesY);
                     for (let i in this.winConditions) {
                         if (tilesX.includes(this.winConditions[i][0]) &&
                             tilesX.includes(this.winConditions[i][1]) &&
                             tilesX.includes(this.winConditions[i][2])) {
-                                this.$store.dispatch({
-                                    type: 'updateStatus',
-                                    room: this.room,
-                                    status: 'won'
-                                });
-                                this.$store.dispatch({
-                                    type: 'updateWinner',
-                                    room: this.room,
-                                    winner: this.p1Name
-                                });
-                                this.gameEnded(this.p1Name + ' won');
+                                if (!this.status.includes('won')) {
+                                    this.$store.dispatch({
+                                        type: 'updateStatus',
+                                        room: this.room,
+                                        status: 'won'
+                                    });
+                                    this.$store.dispatch({
+                                        type: 'updateWinner',
+                                        room: this.room,
+                                        winner: this.p1Name
+                                    });
+                                    console.log('comP', this.p1Name)
+                                    this.gameEnded('won',this.p1Name);
+                                }
                                 break;
                             }
                         else if (tilesY.includes(this.winConditions[i][0]) &&
                             tilesY.includes(this.winConditions[i][1]) &&
                             tilesY.includes(this.winConditions[i][2])) {
-                                this.$store.dispatch({
-                                    type: 'updateStatus',
-                                    room: this.room,
-                                    status: 'won'
-                                });
-                                this.$store.dispatch({
-                                    type: 'updateWinner',
-                                    room: this.room,
-                                    winner: this.p2Name
-                                });
-                                this.gameEnded(this.p2Name + ' won');
+                                if (!this.status.includes('won')) {
+                                    this.$store.dispatch({
+                                        type: 'updateStatus',
+                                        room: this.room,
+                                        status: 'won'
+                                    });
+                                    this.$store.dispatch({
+                                        type: 'updateWinner',
+                                        room: this.room,
+                                        winner: this.p2Name
+                                    });
+                                    console.log('comP', this.p2Name)
+                                    this.gameEnded('won',this.p2Name);
+                                }
                                 break;
                             }
                     }
@@ -157,28 +181,6 @@
         sockets: {
             connect() {
                 console.log('socket connected')
-            },
-            gameEnd(data) {
-                let status = '';
-                let winner = '';
-                if (!data.message == 'draw') {
-                    let messageArr = data.message.split(' ');
-                    status = messageArr.pop();
-                    winner = messageArr.join(' ');
-                }
-                else {
-                    status = data.message;
-                }
-                this.$store.dispatch({
-                    type: 'updateStatus',
-                    room: this.room,
-                    status
-                });
-                this.$store.dispatch({
-                    type: 'updateWinner',
-                    room: this.room,
-                    winner
-                });
             },
             turnPlayed(data) {
                 this.$store.dispatch({
@@ -209,15 +211,31 @@
     }
     .message {
         height: 50%;
-        width: 200%;
+        width: 500%;
         position: absolute;
         top: 25%;
-        left: -50%;
-        background: blue;
+        left: -200%;
+        background: rgb(255, 127, 138);
         z-index: 1;
+        border: 15px solid rgb(255, 255, 255);
         transform: rotate(-45deg);
+        display: flex; 
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
         p {
-            
+            width: 25%;
+            height: 23%;
+			text-align: center; 
+            margin: 0 auto;
+        }
+        h6 {
+            width: 45%;
+            height: 80%;
+			text-align: center; 
+            margin: 0 auto;
+            font-weight: 700;
         }
     }
 </style>

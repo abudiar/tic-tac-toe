@@ -7,7 +7,7 @@
         <hr>
         <div class="container">
             <div v-if="games" class="columns is-multiline">
-                <RoomCard v-for="(game, key) in games" :key="key" :room="key" :nameRoom="game['gameName']"></RoomCard>
+                <RoomCard v-for="(game, key) in reversedGames" :key="key" :room="key" :nameRoom="game['gameName']"></RoomCard>
             </div>
         </div>
     </div>
@@ -28,6 +28,20 @@ export default {
     computed: {
         games: function () {
             return {...this.$store.state.games};
+        },
+        reversedGames: function () { 
+            if (this.games)  {
+                const arr = [];
+                const newGames = {};
+                for (let key in this.games) {
+                    arr.push(key);
+                }
+                for (let i = arr.length - 1; i >= 0; i--) {
+                    newGames[arr[i]] = this.games[arr[i]];
+                }
+                return newGames;
+            }
+            return null;
         }
     },
     methods: {
@@ -81,6 +95,7 @@ export default {
             this.$router.push('/games/' + data.room);
         },
         rooms(data) {
+            console.log('rooms',data)
             if(!data.room) {
                 this.$store.dispatch({
                     type: 'updateAllGames',
@@ -99,7 +114,7 @@ export default {
                     game: data
                 })
             }
-            console.log(this.games);
+            // console.log(this.games);
         }
     },
 

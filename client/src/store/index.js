@@ -19,7 +19,7 @@ export default new Vuex.Store({
       const currentGames = {...state.games};
       currentGames[payload.room] = {...currentGames[payload.room], ...payload.game};
       state.games = currentGames;
-      console.log(state.games);
+      // console.log(state.games);
     },
     updatePlayerName: (state, payload) => {
       state.playerName = payload.playerName;
@@ -61,10 +61,10 @@ export default new Vuex.Store({
     },
     pushTile: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      console.log(state.games);
-      console.log(currentGame);
-      console.log(payload.room);
-      console.log(currentGame['tiles'] )
+      // console.log(state.games);
+      // console.log(currentGame);
+      // console.log(payload.room);
+      // console.log(currentGame['tiles'] )
       currentGame['tiles'].push(payload.tile);
       commit({
         type: 'updateGame',
@@ -119,7 +119,7 @@ export default new Vuex.Store({
     },
     updatePlayer: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      console.log(payload.player);
+      // console.log(payload.player);
       currentGame['player'] = payload.player;
       commit({
         type: 'updateGame',

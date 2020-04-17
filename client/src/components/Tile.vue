@@ -29,7 +29,7 @@
 		},
 		computed: {
 			tiles: function() {
-                console.log(this.$store.state.games[this.room].tiles)
+                // console.log(this.$store.state.games[this.room].tiles)
 				return [...this.$store.state.games[this.room].tiles];
 			},
 			status: function() {
