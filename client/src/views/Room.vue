@@ -1,7 +1,9 @@
 <template>
     <div class="contentDashboard">
+
         <h2 class="title">Room {{gameName}}</h2>
         <h3 class="subtitle">{{title}}</h3>
+
         <hr>
         
             <div class="container">

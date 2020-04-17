@@ -61,6 +61,7 @@ export default {
                         gameName: value
                     })
                     this.$buefy.toast.open(`Your room is: ${value}`)
+                    this.$router.push('/room');
                 }
             })
         }
