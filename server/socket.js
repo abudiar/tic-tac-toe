@@ -1,36 +1,41 @@
-module.exports = {
-  sockets(socket) {
+module.exports = function (server) {
+  const io = require('socket.io')(server);
+
+  const games = {};
+
+  io.on('connection', (socket) => {
+    socket.join('rooms');
     function makeid(length) {
-      var result = '';
-      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      var charactersLength = characters.length;
-      for (var i = 0; i < length; i++) {
+      let result = '';
+      let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let charactersLength = characters.length;
+      for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
       return result;
     }
-    const games = {};
     socket.on('createGame', (data) => {
       const room = makeid(8);
       socket.join(room);
-      socket.emit('newGame', { name: data.name, room });
-      games[room] = { p1: data.name };
-      socket.broadcast.to('rooms').emit({
-        room,
-        p1: data.name,
-      });
+      socket.emit('newGame', { name: data.name, room, gameName: data.gameName });
+      games[room] = { p1Name: data.name, gameName: data.gameName };
+      io.in('rooms').emit('rooms', { room, ...games[room] });
     });
     socket.on('joinGame', function (data) {
       var room = io.nsps['/'].adapter.rooms[data.room];
-      if (room && room.length === 1) {
+      if (!games[data.room]) {
+        socket.emit('err', { message: `Room doesn't exist yet! Create one first!` });
+      } else if (room && room.length === 1) {
         socket.join(data.room);
-        socket.broadcast.to(data.room).emit('player1', {});
-        socket.emit('player2', { name: data.name, room: data.room });
-        games[data.room] = { p2: data.name };
-        socket.broadcast.to('rooms').emit({
-          room,
-          p2: data.name,
+        socket.broadcast.to(data.room).emit('player1', { name: data.name });
+        socket.emit('player2', {
+          name: games[data.room].p1Name,
+          room: data.room,
+          gameName: games[data.room].gameName,
         });
+        games[data.room]['p2Name'] = data.name;
+        games[data.room]['status'] = 'running';
+        io.in('rooms').emit('rooms', { room: data.room, ...games[data.room] });
       } else {
         socket.emit('err', { message: 'Sorry, The room is full!' });
       }
@@ -42,21 +47,22 @@ module.exports = {
       });
       if (!games[data.room]['tiles']) games[data.room]['tiles'] = [];
       games[data.room]['tiles'].push(data.tile);
-      socket.broadcast.to('rooms').emit({
-        room,
-        tiles: games[data.room]['tiles'],
-      });
+      io.in('rooms').emit('rooms', { room: data.room, ...games[data.room] });
     });
     socket.on('gameEnded', (data) => {
       socket.broadcast.to(data.room).emit('gameEnd', data);
-      games[data.room] = { endMessage: data.message };
-      socket.broadcast.to('rooms').emit({
-        room,
-        endMessage: data.message,
+      if (data.winner) games[data.room]['winner'] = data.winner;
+      if (data.status) games[data.room]['status'] = data.status;
+      io.in('rooms').emit('rooms', {
+        room: data.room,
+        winner: data.winner,
       });
     });
     socket.on('rooms', () => {
-      socket.emit('rooms', games);
+      if (Object.keys(games).length > 0)
+        socket.emit('rooms', {
+          games,
+        });
     });
-  },
+  });
 };
