@@ -1,7 +1,12 @@
 <template>
-    <div class="board">
-        <Tile v-for="i in tilesTotal" :key="i" :tile="i" @playTurn="playTurn(i)"
-            :activeSym="getActiveSym" :playerSym="getSym" :room="room"/>
+    <div class="board-content">
+        <div class="message">
+            <p>MESSAGE</p>
+        </div>
+        <div class="board">
+            <Tile v-for="i in tilesTotal" :key="i" :tile="i" @playTurn="playTurn(i)"
+                :activeSym="getActiveSym" :playerSym="getSym" :room="room"/>
+        </div>
     </div>
 </template>
 
@@ -35,10 +40,10 @@
                 return this.$store.state.games[this.room]['player'];
             },
             getActiveSym() {
-                return this.tiles.length % 2 == 0 ? 'X' : 'Y';
+                return this.tiles.length % 2 == 0 ? 'X' : 'O';
             },
             getSym() {
-                return this.$store.state.games[this.room]['player'] == 'p1' ? 'X' : 'Y';
+                return this.$store.state.games[this.room]['player'] == 'p1' ? 'X' : 'O';
             },
             tilesTotal() {
                 const arr = [];
@@ -187,9 +192,32 @@
 </script>
 
 <style scoped lang="scss">
-.board {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-}
+    .board-content {
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+        .board {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+    }
+    .message {
+        height: 50%;
+        width: 200%;
+        position: absolute;
+        top: 25%;
+        left: -50%;
+        background: blue;
+        z-index: 1;
+        transform: rotate(-45deg);
+        p {
+            
+        }
+    }
 </style>

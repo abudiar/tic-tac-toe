@@ -1,5 +1,21 @@
 <template>
-	<div class="tile" @click="check">{{ symbol }}</div>
+	<div class="border">
+		<div class="tile" v-if="symbol == ''" @click="check"></div>
+		<div class="tile" v-if="symbol == 'O'" @click="check">
+			<img
+    			src="../assets/zero.svg" 
+				alt="O"
+				height="100%"
+				width="auto"/>
+		</div>
+		<div class="tile" v-if="symbol == 'X'" @click="check">
+			<img
+    			src="../assets/cross.svg" 
+				alt="X"
+				height="100%"
+				width="auto"/>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -34,7 +50,7 @@
 			this.symbol = '';
 			let i = this.tiles.findIndex((element) => element == this.tile);
 			if (i >= 0)
-				this.symbol = i % 2 == 0 ? 'X' : 'Y';
+				this.symbol = i % 2 == 0 ? 'X' : 'O';
 		},
 		methods: {
 			check: function() {
@@ -51,7 +67,7 @@
 						message = 'The game has finished!';
 					else if (this.status.includes('draw'))
 						message = 'The game has finished!';
-					else if (this.status.includes('stopped'))
+					else if (this.status.includes('waiting'))
 						message = 'Please wait for Player 2';
 					else
 						message = 'Please wait your turn!';
@@ -66,7 +82,7 @@
 			getSymbol: function() {
 				let i = this.tiles.findIndex((element) => element == this.tile);
 				if (i >= 0)
-					return i % 2 == 0 ? 'X' : 'Y';
+					return i % 2 == 0 ? 'X' : 'O';
 				return '';
 			},
 			playTurn() {
@@ -75,11 +91,23 @@
 		}
 	}
 </script>
-<style>
+<style scoped lang="scss">
+	.border {
+		padding: 5%;
+	}
 	.tile {
+        display: flex; 
 		width: 100%;
-		height: 50px;
-		background: rgb(255, 255, 255);
-		border: 1px solid;
+		height: 100%;
+		background: #F7CAC9;
+		// border: 20% solid rgba(0, 0, 0, 0);
+		border-radius: 10%;
+		background-clip: padding-box;
+		img { 
+			width: 80%;
+			height: 80%;
+			margin: auto;
+			text-align: center; 
+		}
 	}
 </style>

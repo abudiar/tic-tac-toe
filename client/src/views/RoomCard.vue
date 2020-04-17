@@ -38,25 +38,14 @@ export default {
     }
     .room-card {
         box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
     }
     .room-header {
         box-shadow: 0 1px 2px rgba(10, 10, 10, 0.1);
         font-weight: 700;
         padding: 10px;
         background-color: #c9f4c8;
-    }
-    .room-content {
-        background-color: #c8e3f4;
-        width: 100%;
-        padding-top: 100%;
-        position: relative;
-        .board {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-        }
     }
     .room-footer {
         border-top: 1px solid #dbdbdb;

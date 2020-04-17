@@ -65,8 +65,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
     .contentDashboard {
       padding-top: 50px;
+      .container {
+		width: 30%;
+      }
     }
 </style>

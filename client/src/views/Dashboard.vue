@@ -7,7 +7,7 @@
         <hr>
         <div class="container">
             <div v-if="games" class="columns is-multiline">
-                <RoomCard v-for="(game, key) in games" :key="key" :room="key" :nameRoom="key"></RoomCard>
+                <RoomCard v-for="(game, key) in games" :key="key" :room="key" :nameRoom="game['gameName']"></RoomCard>
             </div>
         </div>
     </div>
@@ -43,7 +43,8 @@ export default {
                     this.nameRoom = value;
                     this.createNew = true;
                     this.$socket.client.emit('createGame', {
-                        name: this.$store.state.nickname
+                        name: this.$store.state.nickname,
+                        gameName: value
                     })
                     this.$buefy.toast.open(`Your room is: ${value}`)
                 }
@@ -70,6 +71,11 @@ export default {
             this.$store.dispatch({
                 type: 'updateP1Name',
                 p1Name: data.name,
+                room: data.room
+            });
+            this.$store.dispatch({
+                type: 'updateGameName',
+                gameName: data.gameName,
                 room: data.room
             });
             this.$router.push('/games/' + data.room);

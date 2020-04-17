@@ -99,6 +99,15 @@ export default new Vuex.Store({
         game: currentGame
       })
     },
+    updateGameName: ({state, commit}, payload) => {
+      const currentGame = {...state.games[payload.room]};
+      currentGame['gameName'] = payload.gameName;
+      commit({
+        type: 'updateGame',
+        room: payload.room,
+        game: currentGame
+      })
+    },
     updateP2Name: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
       currentGame['p2Name'] = payload.p2Name;
