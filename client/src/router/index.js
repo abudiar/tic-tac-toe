@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Room from '../views/Room.vue'
 
 Vue.use(VueRouter)
 
@@ -19,10 +20,10 @@ Vue.use(VueRouter)
     component: () => import(/* webpackChunkName: "about" */ '../views/Dashboard.vue')
   },
   {
-    path: '/room',
+    path: '/games/:room',
     name: 'Room',
-    component: () => import('../views/Room.vue')
-  }
+    component: Room
+  },
 ]
 
 const router = new VueRouter({

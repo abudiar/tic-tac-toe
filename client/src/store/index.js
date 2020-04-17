@@ -5,17 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    games: {
-      test: {
-        gameName: '',
-        p1Name: '',
-        p2Name: '',
-        tiles: [],
-        winner: '',
-        status: 'waiting',
-        player: 'p1'
-      }
-    },
+    games: {},
     playerName: '',
     nickname: ''
   },
@@ -27,17 +17,33 @@ export default new Vuex.Store({
     },
     updateGame: (state, payload) => {
       const currentGames = {...state.games};
-      currentGames[payload.room] = payload.game;
+      currentGames[payload.room] = {...currentGames[payload.room], ...payload.game};
       state.games = currentGames;
+      console.log(state.games);
     },
     updatePlayerName: (state, payload) => {
       state.playerName = payload.playerName;
-    },
-    updateAllGames: (state, payload) => {
-      state.games = payload.games;
     }
   },
   actions: {
+    updateAllGames: ({state, commit}, payload) => {
+      for (let key in payload.games) {
+        const game = {
+          gameName: '',
+          p1Name: '',
+          p2Name: '',
+          tiles: [],
+          winner: '',
+          status: 'waiting',
+          player: '',
+        }
+        commit({
+          type: 'updateGame',
+          room: key,
+          game: {...game, ...payload.games[key]}
+        })
+      }
+    },
     resetBoard: ({commit}, payload) => {
       commit({
         type: 'updateGame',
@@ -49,13 +55,17 @@ export default new Vuex.Store({
           tiles: [],
           winner: '',
           status: 'waiting',
-          player: ''
+          player: '',
         }
       })
     },
     pushTile: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      currentGame[payload.room]['tile'] = payload.tile;
+      console.log(state.games);
+      console.log(currentGame);
+      console.log(payload.room);
+      console.log(currentGame['tiles'] )
+      currentGame['tiles'].push(payload.tile);
       commit({
         type: 'updateGame',
         room: payload.room,
@@ -64,7 +74,7 @@ export default new Vuex.Store({
     },
     updateStatus: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      currentGame[payload.room]['status'] = payload.status;
+      currentGame['status'] = payload.status;
       commit({
         type: 'updateGame',
         room: payload.room,
@@ -73,7 +83,7 @@ export default new Vuex.Store({
     },
     updateWinner: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      currentGame[payload.room]['winner'] = payload.winner;
+      currentGame['winner'] = payload.winner;
       commit({
         type: 'updateGame',
         room: payload.room,
@@ -82,7 +92,16 @@ export default new Vuex.Store({
     },
     updateP1Name: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      currentGame[payload.room]['p1Name'] = payload.p1Name;
+      currentGame['p1Name'] = payload.p1Name;
+      commit({
+        type: 'updateGame',
+        room: payload.room,
+        game: currentGame
+      })
+    },
+    updateGameName: ({state, commit}, payload) => {
+      const currentGame = {...state.games[payload.room]};
+      currentGame['gameName'] = payload.gameName;
       commit({
         type: 'updateGame',
         room: payload.room,
@@ -91,7 +110,7 @@ export default new Vuex.Store({
     },
     updateP2Name: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      currentGame[payload.room]['p2Name'] = payload.p2Name;
+      currentGame['p2Name'] = payload.p2Name;
       commit({
         type: 'updateGame',
         room: payload.room,
@@ -100,7 +119,8 @@ export default new Vuex.Store({
     },
     updatePlayer: ({state, commit}, payload) => {
       const currentGame = {...state.games[payload.room]};
-      currentGame[payload.room]['player'] = payload.player;
+      console.log(payload.player);
+      currentGame['player'] = payload.player;
       commit({
         type: 'updateGame',
         room: payload.room,

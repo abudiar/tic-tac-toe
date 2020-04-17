@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const { sockets } = require('socket.io');
+const { sockets } = require('./socket');
 let rooms = 0;
 
 const server = app.listen(port, () => {
