@@ -7,8 +7,9 @@
                 </p>
             </div>
             <div class="room-content">
-                <p>{{$store.state.nickname}}</p>
-                <p>{player b}</p>
+                <!-- <p>{{$store.state.nickname}}</p>
+                <p>{player b}</p> -->
+                <Board v-if="$store.state.games[room]" :room="room"/>
             </div>
             <div class="room-footer btn-join" @click.prevent="">
                 Join
@@ -17,13 +18,20 @@
     </div>
 </template>
 <script>
+import Board from '@/components/Board.vue';
 export default {
     name: "RoomCard",
-    props: ['nameRoom']
+    components: {
+        Board
+    },
+    props: [
+        'nameRoom',
+        "room"
+    ]
 }
 </script>
 
-<style>
+<style scoped lang="scss">
     .btn-join {
         padding: 10px;
         text-align: center;
@@ -38,9 +46,17 @@ export default {
         background-color: #c9f4c8;
     }
     .room-content {
-        padding-top: 20px;
-        padding-bottom: 20px;
         background-color: #c8e3f4;
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+        .board {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
     }
     .room-footer {
         border-top: 1px solid #dbdbdb;

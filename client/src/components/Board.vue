@@ -38,7 +38,6 @@
                 return this.tiles.length % 2 == 0 ? 'X' : 'Y';
             },
             getSym() {
-                console.log(this.$store.state.games[this.room]['player'])
                 return this.$store.state.games[this.room]['player'] == 'p1' ? 'X' : 'Y';
             },
             tilesTotal() {

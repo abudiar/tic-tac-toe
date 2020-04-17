@@ -5,17 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    games: {
-      test: {
-        gameName: '',
-        p1Name: '',
-        p2Name: '',
-        tiles: [],
-        winner: '',
-        status: 'waiting',
-        player: 'p1'
-      }
-    },
+    games: {},
     playerName: '',
     nickname: ''
   },
@@ -29,19 +19,28 @@ export default new Vuex.Store({
       const currentGames = {...state.games};
       currentGames[payload.room] = {...currentGames[payload.room], ...payload.game};
       state.games = currentGames;
+      console.log(state.games);
     },
     updatePlayerName: (state, payload) => {
       state.playerName = payload.playerName;
     }
   },
   actions: {
-    updateAllGames: ({commit}, payload) => {
+    updateAllGames: ({state, commit}, payload) => {
       for (let key in payload.games) {
-        console.log(key, payload.games[key])
+        const game = {
+          gameName: '',
+          p1Name: '',
+          p2Name: '',
+          tiles: [],
+          winner: '',
+          status: 'waiting',
+          player: '',
+        }
         commit({
           type: 'updateGame',
           room: key,
-          game: payload.games[key]
+          game: {...game, ...payload.games[key]}
         })
       }
     },

@@ -13,6 +13,7 @@
 		},
 		computed: {
 			tiles: function() {
+                console.log(this.$store.state.games[this.room].tiles)
 				return [...this.$store.state.games[this.room].tiles];
 			},
 			status: function() {
@@ -28,6 +29,12 @@
 			tiles: function() {
 				this.symbol = this.getSymbol();
 			}
+		},
+		mounted () {
+			this.symbol = '';
+			let i = this.tiles.findIndex((element) => element == this.tile);
+			if (i >= 0)
+				this.symbol = i % 2 == 0 ? 'X' : 'Y';
 		},
 		methods: {
 			check: function() {

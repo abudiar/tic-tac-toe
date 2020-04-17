@@ -7,7 +7,7 @@
         <hr>
         <div class="container">
             <div v-if="games" class="columns is-multiline">
-                <RoomCard v-for="(game, i) in games" :key="i" :nameRoom="i"></RoomCard>
+                <RoomCard v-for="(game, key) in games" :key="key" :room="key" :nameRoom="key"></RoomCard>
             </div>
         </div>
     </div>
