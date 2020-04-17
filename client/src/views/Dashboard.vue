@@ -60,8 +60,7 @@ export default {
                         name: this.$store.state.nickname,
                         gameName: value
                     })
-                    this.$buefy.toast.open(`Your room is: ${value}`)
-                    this.$router.push('/room');
+                    this.$buefy.toast.open(`Your room is: ${value}`);
                 }
             })
         }

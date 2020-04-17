@@ -22,6 +22,7 @@
 </template>
 <script>
 import Board from '@/components/Board.vue';
+require('howler');
 export default {
     name: 'Room',
     components: {
@@ -46,6 +47,12 @@ export default {
         gameName: function() {
             return this.$store.state.games[this.$route.params.room]['gameName'];
         },
+        nickname: function() {
+            return this.$store.state.games[this.$route.params.room]['nickname'];
+        },
+        winner: function() {
+            return this.$store.state.games[this.$route.params.room]['winner'];
+        },
         isRunning: function() {
             return this.status === 'running';
         },
@@ -61,6 +68,12 @@ export default {
                     return true;
             return false;
         },
+        isWinner: function() {
+            if (this.status === 'won')
+                if (this.nickname == this.winner)
+                    return true;
+            return false;
+        }, 
         opponentName: function () {
             if (this.player == 'p1')
                 return this.p2Name;
@@ -71,7 +84,23 @@ export default {
             return `${this.p1Name}(X) vs. ${this.p2Name}(Y)`
         }
     },
+    methods: {
+        playSound() {
+            console.log('Playyy');
+            let sound = new Howl({
+                src: '@/assets/wow.mp3',
+                volume: 0.5,
+            });
+            sound.play();
+        }
+    },
     watch: {
+        winner: function () {
+            console.log('Winner');
+            if (this.isWinner) {
+                this.playSound();
+            }
+        }
     },
     mounted () {
         if (!this.$store.state.games[this.$route.params.room] ||
