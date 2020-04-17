@@ -6,13 +6,13 @@
         
             <div class="container">
             <div class="room-card">
-                <div class="room-header transition" :class="{'show': !isActive && isRunning}">
-                    It's {{opponentName}}'s turn!
+                <div class="room-header transition" :class="{'show': isActive && isRunning}">
+                    It's your turn!
                 </div>
                 <Board v-if="$store.state.games[$route.params.room] && $store.state.games[$route.params.room]['player']" :room="$route.params.room"/>
-                
-                <div class="room-footer transition" :class="{'show': isActive}">
-                    {{isRunning ? `It's your turn!` : 'Waiting for someone to join...'}}
+                <div class="room-footer transition" :class="{'show': (!isActive && isRunning) || (isActive && isWaiting)}">
+                    {{isRunning ? `It's ${opponentName}'s turn!` : 'Waiting for someone to join...'}}
+                    
                 </div>
             </div>
             </div>
@@ -45,7 +45,10 @@ export default {
             return this.$store.state.games[this.$route.params.room]['gameName'];
         },
         isRunning: function() {
-            return this.status == 'running'
+            return this.status === 'running';
+        },
+        isWaiting: function() {
+            return this.status === 'waiting';
         },
         isActive() {
             if (this.tiles.length % 2 == 0)
