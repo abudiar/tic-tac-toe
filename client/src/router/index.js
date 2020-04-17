@@ -33,6 +33,13 @@ Vue.use(VueRouter)
       next();
     }
   },
+  {
+    path: '*',
+    name: 'NotFound',
+    beforeEnter: (to, from, next) => {
+      next('/');
+    }
+  },
 ]
 
 const router = new VueRouter({
